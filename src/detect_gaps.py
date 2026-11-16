@@ -165,9 +165,9 @@ def run(df, cells, alive_bins, output_folder):
     gaps = find_gaps(df, cells, alive_bins)
 
     os.makedirs(output_folder, exist_ok=True)
-    gaps.to_csv(os.path.join(output_folder, "gaps_all_candidates.csv"), index=False)
+    helpers.spreadsheet_safe(gaps).to_csv(os.path.join(output_folder, "gaps_all_candidates.csv"), index=False)
     flagged = gaps[gaps["flagged"]]
-    flagged.to_csv(os.path.join(output_folder, "gaps_flagged.csv"), index=False)
+    helpers.spreadsheet_safe(flagged).to_csv(os.path.join(output_folder, "gaps_flagged.csv"), index=False)
 
     print(f"\nGaps: {len(gaps)} silences of {config.GAP_MIN_MINUTES}+ minutes, "
           f"{len(flagged)} flagged after all checks")
