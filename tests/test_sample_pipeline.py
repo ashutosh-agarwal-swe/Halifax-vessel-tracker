@@ -102,6 +102,28 @@ def test_warship_is_removed_and_never_flagged(results):
     assert SAMPLE_WARSHIP not in results["gaps"]["mmsi"].values
 
 
+def test_map_popups_escape_ship_names(results, tmp_path):
+    pytest.importorskip("folium")
+    from src import make_map
+
+    evil = "<b>EVIL</b>"
+    gaps = results["gaps"].copy()
+    gaps["vessel_name"] = evil
+    loitering = results["loitering"].copy()
+    loitering["vessel_name"] = evil
+    rendezvous = results["rendezvous"].copy()
+    rendezvous["name_a"] = evil
+    rendezvous["name_b"] = evil
+    assert gaps["flagged"].any() and len(loitering) > 0 and len(rendezvous) > 0
+
+    make_map.make_interactive_map(results["df"].head(50), gaps, loitering,
+                                  rendezvous, str(tmp_path))
+    page = (tmp_path / "map.html").read_text()
+    assert evil not in page
+    assert "&lt;b&gt;EVIL&lt;/b&gt;" in page
+    assert "<br>" in page
+
+
 def test_review_sheet_escapes_formula_ship_names(results, tmp_path):
     df = results["df"].copy()
     df.loc[df["mmsi"] == DARK_STAR, "vessel_name"] = "=1+1"

@@ -10,6 +10,7 @@ Each kind of event has its own colour AND its own marker shape, so the
 map still works for colour-blind readers and in black and white.
 """
 
+import html
 import os
 
 import matplotlib
@@ -30,6 +31,11 @@ COLOR_TEXT = "#0b0b0b"
 COLOR_BACKGROUND = "#fcfcfb"
 
 MAX_TRACK_POINTS = 60000      # more than this just makes the picture slow
+
+
+def _esc(value):
+    """Escape a data value for use inside folium popup HTML."""
+    return html.escape(str(value))
 
 
 def setup_axes(ax, title):
@@ -163,8 +169,8 @@ def make_interactive_map(df, gaps, loitering, rendezvous, output_folder):
     gaps_layer = folium.FeatureGroup(name="Transmission gaps")
     flagged = gaps[gaps["flagged"]] if len(gaps) > 0 else gaps
     for row in flagged.itertuples():
-        text = (f"GAP: {row.vessel_name} (MMSI {row.mmsi})<br>"
-                f"{row.gap_start} to {row.gap_end}<br>"
+        text = (f"GAP: {_esc(row.vessel_name)} (MMSI {_esc(row.mmsi)})<br>"
+                f"{_esc(row.gap_start)} to {_esc(row.gap_end)}<br>"
                 f"{row.gap_hours:.1f} hours, {row.distance_km:.0f} km apart")
         folium.PolyLine(
             locations=[[row.start_lat, row.start_lon], [row.end_lat, row.end_lon]],
@@ -179,10 +185,10 @@ def make_interactive_map(df, gaps, loitering, rendezvous, output_folder):
     # --- loitering ---------------------------------------------------
     loiter_layer = folium.FeatureGroup(name="Loitering")
     for row in loitering.itertuples():
-        text = (f"LOITERING: {row.vessel_name} (MMSI {row.mmsi})<br>"
-                f"{row.start} to {row.end}<br>"
+        text = (f"LOITERING: {_esc(row.vessel_name)} (MMSI {_esc(row.mmsi)})<br>"
+                f"{_esc(row.start)} to {_esc(row.end)}<br>"
                 f"{row.duration_hours:.1f} hours<br>"
-                f"Routine type: {row.routine_type or 'no'}")
+                f"Routine type: {_esc(row.routine_type or 'no')}")
         folium.RegularPolygonMarker(
             location=[row.lat, row.lon], number_of_sides=4, radius=8,
             color=COLOR_LOITER, fill=True, fill_color=COLOR_LOITER,
@@ -193,11 +199,11 @@ def make_interactive_map(df, gaps, loitering, rendezvous, output_folder):
     # --- rendezvous --------------------------------------------------
     rdv_layer = folium.FeatureGroup(name="Rendezvous")
     for row in rendezvous.itertuples():
-        text = (f"RENDEZVOUS: {row.name_a} and {row.name_b}<br>"
-                f"MMSI {row.mmsi_a} and {row.mmsi_b}<br>"
-                f"{row.start} to {row.end}<br>"
+        text = (f"RENDEZVOUS: {_esc(row.name_a)} and {_esc(row.name_b)}<br>"
+                f"MMSI {_esc(row.mmsi_a)} and {_esc(row.mmsi_b)}<br>"
+                f"{_esc(row.start)} to {_esc(row.end)}<br>"
                 f"{row.duration_minutes:.0f} minutes, closest {row.closest_km * 1000:.0f} m<br>"
-                f"Routine type: {row.routine_type or 'no'}")
+                f"Routine type: {_esc(row.routine_type or 'no')}")
         folium.RegularPolygonMarker(
             location=[row.lat, row.lon], number_of_sides=3, radius=9,
             color=COLOR_RENDEZVOUS, fill=True, fill_color=COLOR_RENDEZVOUS,
