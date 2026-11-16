@@ -104,3 +104,28 @@ def routine_label(vessel_type):
     if pd.isna(vessel_type):
         return ""
     return config.ROUTINE_TYPES.get(int(vessel_type), "")
+
+
+FORMULA_START_CHARS = ("=", "+", "-", "@", "\t", "\r")
+
+
+def escape_formula_text(value):
+    """
+    Put a single quote in front of text that a spreadsheet would run as a
+    formula. Ship names come straight from radio broadcasts, so a name
+    like "=HYPERLINK(...)" must show up as plain text in Excel.
+    """
+    if isinstance(value, str) and value.startswith(FORMULA_START_CHARS):
+        return "'" + value
+    return value
+
+
+def spreadsheet_safe(df):
+    """
+    Return a copy of df with escape_formula_text applied to every text
+    column. Use it on CSVs that people open in a spreadsheet program.
+    """
+    df = df.copy()
+    for column in df.select_dtypes(include=["object", "string"]).columns:
+        df[column] = df[column].map(escape_formula_text)
+    return df

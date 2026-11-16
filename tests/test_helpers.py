@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 import config
 from src import helpers
@@ -41,3 +42,23 @@ def test_routine_label():
     assert helpers.routine_label(30) == "fishing"
     assert helpers.routine_label(70) == ""
     assert helpers.routine_label(float("nan")) == ""
+
+
+def test_formula_text_is_escaped():
+    for text in ["=1+1", "+1", "-1", "@SUM(A1)", "\tX", "\rX"]:
+        assert helpers.escape_formula_text(text) == "'" + text
+
+
+def test_plain_text_and_numbers_are_not_escaped():
+    assert helpers.escape_formula_text("DARK STAR") == "DARK STAR"
+    assert helpers.escape_formula_text(-66.5) == -66.5
+
+
+def test_spreadsheet_safe_only_touches_text_columns():
+    df = pd.DataFrame({"vessel_name": ["=1+1", "DARK STAR", None],
+                       "lon": [-66.1, -66.2, -66.3]})
+    safe = helpers.spreadsheet_safe(df)
+    assert list(safe["vessel_name"][:2]) == ["'=1+1", "DARK STAR"]
+    assert pd.isna(safe["vessel_name"][2])
+    assert list(safe["lon"]) == [-66.1, -66.2, -66.3]
+    assert df["vessel_name"][0] == "=1+1"

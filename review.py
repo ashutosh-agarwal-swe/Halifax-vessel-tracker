@@ -22,6 +22,8 @@ import os
 
 import pandas as pd
 
+from src import helpers
+
 TOP_N = 20  # how many events per detector to review
 
 
@@ -110,7 +112,7 @@ def main():
                          "(any labels you typed will be lost).")
 
     sheet = build_sheet(output_folder)
-    sheet.to_csv(sheet_path, index=False)
+    helpers.spreadsheet_safe(sheet).to_csv(sheet_path, index=False)
     print(f"Wrote {len(sheet)} events to {sheet_path}")
     print("Fill in the label column, then run: python review.py --score")
 
