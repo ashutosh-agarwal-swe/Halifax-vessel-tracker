@@ -8,18 +8,63 @@ port, for at least RDV_MIN_MINUTES.
 How it works:
   1. keep only slow pings outside ports
   2. put time into 5 minute buckets, one position per ship per bucket
-  3. join the table to itself on the bucket, which gives every pair of
-     ships that were both seen in the same 5 minutes
+  3. join the table to itself on the bucket and a coarse grid cell
+     (plus its 8 neighbours), which gives every pair of ships that were
+     seen in the same 5 minutes and could be close enough to count
   4. keep the pairs that were close together
   5. glue neighbouring buckets of the same pair into one event
 """
 
 import os
 
+import numpy as np
 import pandas as pd
 
 import config
 from src import helpers
+
+
+def add_grid_cells(slow):
+    """
+    Put every position in a lat/lon grid cell at least
+    RDV_MAX_DISTANCE_KM wide, so two ships that are close enough to
+    count are always in the same cell or in neighbouring cells.
+
+    Returns the number of longitude cells around the globe, so the
+    caller can wrap neighbours across the 180 degree line.
+    """
+    # Slightly smaller than a real degree, so the cells come out a bit
+    # wider than they need to be rather than a bit narrower.
+    km_per_degree = 0.99 * np.pi * helpers.EARTH_RADIUS_KM / 180
+    lat_step = config.RDV_MAX_DISTANCE_KM / km_per_degree
+
+    # A degree of longitude shrinks towards the poles, so size the
+    # longitude cells for the most northern / southern ship.
+    max_abs_lat = min(float(slow["lat"].abs().max()) + lat_step, 90.0)
+    cos_lat = np.cos(np.radians(max_abs_lat))
+    if cos_lat * 360 > lat_step:
+        lon_step = lat_step / cos_lat
+    else:
+        lon_step = 360.0
+    n_lon_cells = max(int(360 // lon_step), 1)
+    lon_step = 360.0 / n_lon_cells
+
+    slow["lat_cell"] = np.floor((slow["lat"] + 90) / lat_step).astype("int64")
+    slow["lon_cell"] = (np.floor((slow["lon"] + 180) / lon_step).astype("int64")) % n_lon_cells
+    return n_lon_cells
+
+
+def neighbour_cells(slow, n_lon_cells):
+    """One row per ship per bucket for its own cell and each of the 8 around it."""
+    lon_offsets = sorted({dx % n_lon_cells for dx in (-1, 0, 1)})
+    copies = []
+    for dy in (-1, 0, 1):
+        for dx in lon_offsets:
+            copy = slow.copy()
+            copy["lat_cell"] = copy["lat_cell"] + dy
+            copy["lon_cell"] = (copy["lon_cell"] + dx) % n_lon_cells
+            copies.append(copy)
+    return pd.concat(copies, ignore_index=True)
 
 
 def find_rendezvous(df):
@@ -44,8 +89,17 @@ def find_rendezvous(df):
     slow = slow.drop_duplicates(subset=["mmsi", "bucket"], keep="first")
     slow = slow[["mmsi", "vessel_name", "vessel_type", "bucket", "lat", "lon"]]
 
-    # --- 3. every pair of ships seen in the same bucket --------------
-    pairs = slow.merge(slow, on="bucket", suffixes=("_a", "_b"))
+    # --- 3. every pair of nearby ships seen in the same bucket -------
+    # Joining on the bucket alone would pair every ship with every other
+    # ship in those 5 minutes, which grows with the square of the number
+    # of ships. Only ships in the same or a neighbouring cell can be
+    # close enough, so only those are paired.
+    n_lon_cells = add_grid_cells(slow)
+    pairs = slow.merge(
+        neighbour_cells(slow, n_lon_cells),
+        on=["bucket", "lat_cell", "lon_cell"],
+        suffixes=("_a", "_b"),
+    )
     # Keep each pair once (A-B but not B-A, and not A-A).
     pairs = pairs[pairs["mmsi_a"] < pairs["mmsi_b"]].copy()
     if len(pairs) == 0:
