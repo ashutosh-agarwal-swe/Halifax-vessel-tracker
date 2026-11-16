@@ -111,7 +111,7 @@ def run(df, output_folder):
     events = find_rendezvous(df)
 
     os.makedirs(output_folder, exist_ok=True)
-    events.to_csv(os.path.join(output_folder, "rendezvous.csv"), index=False)
+    helpers.spreadsheet_safe(events).to_csv(os.path.join(output_folder, "rendezvous.csv"), index=False)
 
     n_routine = int(events["likely_routine"].sum()) if len(events) > 0 else 0
     print(f"\nRendezvous: {len(events)} meetings of {config.RDV_MIN_MINUTES}+ minutes "

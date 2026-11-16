@@ -83,7 +83,7 @@ def run(df, output_folder):
     loitering = find_loitering(df)
 
     os.makedirs(output_folder, exist_ok=True)
-    loitering.to_csv(os.path.join(output_folder, "loitering.csv"), index=False)
+    helpers.spreadsheet_safe(loitering).to_csv(os.path.join(output_folder, "loitering.csv"), index=False)
 
     n_routine = int(loitering["likely_routine"].sum()) if len(loitering) > 0 else 0
     print(f"\nLoitering: {len(loitering)} runs of {config.LOITER_MIN_HOURS}+ hours "

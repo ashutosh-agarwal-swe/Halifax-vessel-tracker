@@ -6,6 +6,7 @@ the events that were planted in it, and nothing it should not.
 import pytest
 
 import make_sample_data
+import review
 from src import clean, coverage, detect_gaps, detect_loitering, detect_rendezvous
 
 DARK_STAR = 316001001
@@ -99,3 +100,17 @@ def test_planted_rendezvous_is_found(results):
 def test_warship_is_removed_and_never_flagged(results):
     assert SAMPLE_WARSHIP not in results["df"]["mmsi"].values
     assert SAMPLE_WARSHIP not in results["gaps"]["mmsi"].values
+
+
+def test_review_sheet_escapes_formula_ship_names(results, tmp_path):
+    df = results["df"].copy()
+    df.loc[df["mmsi"] == DARK_STAR, "vessel_name"] = "=1+1"
+    folder = str(tmp_path)
+    alive_bins = coverage.feed_alive_bins(df)
+    detect_gaps.run(df, results["cells"], alive_bins, folder)
+    detect_loitering.run(df, folder)
+    detect_rendezvous.run(df, folder)
+
+    sheet = review.build_sheet(folder)
+    gap_rows = sheet[sheet["detector"] == "gap"]
+    assert list(gap_rows["ships"]) == [f"'=1+1 ({DARK_STAR})"]
