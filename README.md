@@ -1,6 +1,6 @@
 # Fundy Vessel Tracker
 
-Built with AI-assisted development and human testing and oversight.  
+Built with AI-assisted development and human testing/oversight.  
 
 **Finding unusual ship behaviour in the Bay of Fundy using public AIS data.**
 
