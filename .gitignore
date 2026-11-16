@@ -1,0 +1,25 @@
+# My aisstream.io key - never commit this
+api_key.txt
+
+# Data is too big for GitHub and can be rebuilt
+data/raw/
+data/marinecadastre/
+data/processed/
+data/sample/
+data/sample_processed/
+
+# Results are rebuilt by run_pipeline.py
+outputs/
+outputs_sample/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
