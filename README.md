@@ -1,5 +1,7 @@
 # Fundy Vessel Tracker
 
+Built with AI-assisted development and human testing and oversight.  
+
 **Finding unusual ship behaviour in the Bay of Fundy using public AIS data.**
 
 Ships broadcast their position over radio using a system called AIS. This project collects those broadcasts for the waters around Saint John, New Brunswick, and looks for three kinds of behaviour that maritime analysts care about:
@@ -14,7 +16,10 @@ Ships broadcast their position over radio using a system called AIS. This projec
 
 ## Results
 
-> **TODO: fill this section in after collecting real data.** Run `python run_pipeline.py`, copy the numbers from `outputs/summary.txt`, and replace the placeholders below. Do not publish this README with the placeholders still in it.
+> Live collection from aisstream.io hasn't started yet, so there are no real results.
+The maps in this README come from the bundled sample data, which uses invented ships.
+They show what the pipeline produces, not what is happening in the Bay of Fundy.
+Run `python run_pipeline.py --sample` to reproduce them.
 
 Between **[start date]** and **[end date]** I recorded **[N]** ships and **[N]** position reports in the study area.
 
