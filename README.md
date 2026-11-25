@@ -2,9 +2,11 @@
 
 Built with AI-assisted development and human testing/oversight.  
 
-**Finding unusual ship behaviour in the Bay of Fundy using public AIS data.**
+**Finding unusual ship behaviour in the waters off Halifax using public AIS data.**
 
-Ships broadcast their position over radio using a system called AIS. This project collects those broadcasts for the waters around Saint John, New Brunswick, and looks for three kinds of behaviour that maritime analysts care about:
+*(The project started out aimed at the Bay of Fundy — the name stuck. See [Why Halifax and not the Bay of Fundy](#why-halifax-and-not-the-bay-of-fundy).)*
+
+Ships broadcast their position over radio using a system called AIS. This project collects those broadcasts for the waters around Halifax, Nova Scotia, and looks for three kinds of behaviour that maritime analysts care about:
 
 | Behaviour | What it means |
 |---|---|
@@ -18,7 +20,7 @@ Ships broadcast their position over radio using a system called AIS. This projec
 
 > Live collection from aisstream.io hasn't started yet, so there are no real results.
 The maps in this README come from the bundled sample data, which uses invented ships.
-They show what the pipeline produces, not what is happening in the Bay of Fundy.
+They show what the pipeline produces, not what is happening off Halifax.
 Run `python run_pipeline.py --sample` to reproduce them.
 
 ### What the output looks like
@@ -56,13 +58,17 @@ There is a second version of the same problem. I collect the data myself, so if 
 
 ## Data
 
-There is no free archive of historical AIS data for Canadian waters. The well known free archive, MarineCadastre.gov, only includes ships inside the United States Exclusive Economic Zone, which leaves out Saint John and most of the Bay of Fundy.
+There is no free archive of historical AIS data for Canadian waters. The well known free archive, MarineCadastre.gov, only includes ships inside the United States Exclusive Economic Zone, which leaves out Halifax.
 
 So this project builds its own dataset. `collect_ais.py` connects to [aisstream.io](https://aisstream.io), a free live AIS feed, and saves one position per ship per minute for as long as it is left running.
 
 Full instructions are in **[docs/DATA_DOWNLOAD.md](docs/DATA_DOWNLOAD.md)**.
 
-**Study area:** latitude 44.5 to 45.6, longitude -67.0 to -65.0. This covers Saint John harbour, the main shipping lane down the bay, the Digby ferry route and Grand Manan.
+**Study area:** latitude 44.2 to 44.9, longitude -64.2 to -63.1. This covers Halifax harbour and Bedford Basin, the anchorages off Chebucto Head, and the shipping lanes in and out of the harbour approaches.
+
+### Why Halifax and not the Bay of Fundy
+
+The original plan was to study the waters around Saint John, New Brunswick. But aisstream.io relies on volunteer radio receivers, and four separate tests over four days — including weekday midday — picked up **zero** messages in the Bay of Fundy box. There is simply no receiver in range there. The first test in Halifax picked up 34 ships in five minutes. This is exactly the kind of problem the coverage grid in this project is built to handle, but no analysis is possible with no data at all.
 
 ---
 
@@ -112,7 +118,7 @@ Every silence is saved to `outputs/gaps_all_candidates.csv` with a True/False co
 
 Looks for a run of pings from one ship where every ping is under 2 knots, there is no silence longer than 15 minutes inside the run, the run lasts at least 2 hours, and its average position is outside every port circle.
 
-The speed limit is 2 knots and not lower because the Bay of Fundy has some of the strongest tides in the world. A ship that is drifting can still show a knot or two.
+The speed limit is 2 knots and not lower because a ship that is drifting with the tide and wind, or nudging around an anchor, can still show a knot or two without actually going anywhere.
 
 ### Rendezvous detector
 

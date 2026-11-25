@@ -6,14 +6,14 @@ change the number here instead of hunting through the code.
 """
 
 # ---------------------------------------------------------------
-# 1. Study area (a rectangle around the Bay of Fundy near Saint John)
+# 1. Study area (a rectangle around Halifax harbour and its approaches)
 # ---------------------------------------------------------------
-AREA_NAME = "the Bay of Fundy"
+AREA_NAME = "Halifax harbour and approaches"
 
-LAT_MIN = 44.5
-LAT_MAX = 45.6
-LON_MIN = -67.0
-LON_MAX = -65.0
+LAT_MIN = 44.2
+LAT_MAX = 44.9
+LON_MIN = -64.2
+LON_MAX = -63.1
 
 # ---------------------------------------------------------------
 # 2. Ports and anchorages
@@ -28,11 +28,8 @@ LON_MAX = -65.0
 # outputs/map.html, look at where slow ships really bunch up, and
 # adjust the circles (or add new ones for anchorages).
 PORTS = [
-    ("Saint John harbour and anchorages", 45.22, -66.03, 10.0),
-    ("Digby", 44.64, -65.76, 6.0),
-    ("Blacks Harbour", 45.05, -66.79, 3.0),
-    ("North Head, Grand Manan", 44.76, -66.75, 3.0),
-    ("Eastport, Maine", 44.90, -66.98, 3.0),
+    ("Halifax harbour and Bedford Basin", 44.64, -63.56, 9.0),
+    ("Chebucto Head anchorage", 44.51, -63.52, 4.0),
 ]
 
 # ---------------------------------------------------------------
@@ -79,7 +76,7 @@ GAP_MIN_PATH_COVERED = 0.80   # share of the straight line start->end that is we
 # ---------------------------------------------------------------
 # 6. Loitering detector
 # ---------------------------------------------------------------
-# The Bay of Fundy has very strong tidal currents, so a drifting ship
+# A ship drifting with the tide and wind, or nudging around its anchor,
 # can still show 1-2 knots. That is why this is not set lower.
 LOITER_MAX_SPEED = 2.0        # knots
 LOITER_MIN_HOURS = 2.0
@@ -110,7 +107,7 @@ ROUTINE_TYPES = {
     53: "port tender",
     55: "law enforcement",
 }
-# Passenger ships (60-69) include the Saint John - Digby ferry.
+# Passenger ships (60-69) include the Halifax - Dartmouth ferries.
 for code in range(60, 70):
     ROUTINE_TYPES[code] = "passenger / ferry"
 

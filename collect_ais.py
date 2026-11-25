@@ -242,7 +242,10 @@ async def collect(api_key, minutes):
 
     while True:
         try:
-            async with websockets.connect(STREAM_URL) as websocket:
+            # aisstream's server can take 15+ seconds to answer the
+            # websocket handshake when it is busy, so allow more than
+            # the 10 second default.
+            async with websockets.connect(STREAM_URL, open_timeout=60) as websocket:
                 # aisstream closes the connection if this is not sent
                 # within 3 seconds of connecting.
                 await websocket.send(json.dumps(subscription))

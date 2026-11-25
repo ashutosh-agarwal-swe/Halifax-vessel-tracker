@@ -2,9 +2,9 @@
 
 ## Read this first
 
-There is no file to download for Saint John.
+There is no file to download for Halifax.
 
-- **MarineCadastre.gov** (the big free AIS archive) only includes ships inside the United States Exclusive Economic Zone. Saint John and most of the Bay of Fundy are Canadian waters and are not in it.
+- **MarineCadastre.gov** (the big free AIS archive) only includes ships inside the United States Exclusive Economic Zone. Halifax is Canadian waters and is not in it.
 - Canada does not publish a free archive of raw AIS positions.
 
 So the data for this project is **collected live**, using a free service called aisstream.io. You start a script, leave it running for a few weeks, and it saves every ship it hears in the study area.
@@ -12,7 +12,7 @@ So the data for this project is **collected live**, using a free service called 
 Two things follow from that:
 
 1. **You cannot get last month's data.** Collection starts the day you start the script.
-2. **It only works if aisstream.io has a receiver near Saint John.** Step 4 below is a 30 minute test that tells you. Do that test before anything else. If it fails, go to [Plan B](#plan-b-use-us-waters-instead).
+2. **It only works if aisstream.io has a receiver near Halifax.** Step 4 below is a 30 minute test that tells you. Do that test before anything else. (When this project was aimed at Saint John, this test is exactly what saved it: zero messages over four days of trying. The first Halifax test picked up 34 ships in five minutes.) If it fails for you, go to [Plan B](#plan-b-use-us-waters-instead).
 
 ---
 
@@ -63,7 +63,7 @@ You should see `connected`, then a status line every 5 minutes, then a final lin
 Saved 412 positions from 17 ships.
 ```
 
-While it runs, open a live ship map such as <https://www.marinetraffic.com> or <https://www.vesselfinder.com> and look at Saint John. There are almost always ships at the oil terminal, at anchor or at the port.
+While it runs, open a live ship map such as <https://www.marinetraffic.com> or <https://www.vesselfinder.com> and look at Halifax. There are almost always ships in the harbour, at the anchorages or moving in the approaches.
 
 | What you see | What it means | What to do |
 |---|---|---|
@@ -106,7 +106,7 @@ Once a day, look in `data/raw/`:
 - There should be a new `positions_YYYY-MM-DD.csv` for each day, and today's file should be getting bigger.
 - `collector_log.csv` lists every time the script connected, disconnected or was stopped. A few disconnects a day are normal. The script reconnects by itself.
 
-Dates and times in the files are in **UTC**, which is 4 hours ahead of Saint John in winter and 3 hours ahead in summer. A new file starts at 8 pm or 9 pm local time, not at midnight.
+Dates and times in the files are in **UTC**, which is 4 hours ahead of Halifax in winter and 3 hours ahead in summer. A new file starts at 8 pm or 9 pm local time, not at midnight.
 
 ### How much data to expect
 
@@ -135,7 +135,7 @@ You can run this at any time while the collector is still going, to watch the re
 
 After the first real run, open `outputs/map.html` and look at the loitering squares. If a lot of them are bunched together just outside a port circle, that is an anchorage, not suspicious behaviour. Make the circle bigger or add a new one in `config.py`, and run the pipeline again.
 
-Pilot boats meet every large ship on its way into Saint John. If the rendezvous triangles bunch up in one spot outside the harbour circle, that is the pilot boarding area. Add a circle for it.
+Pilot boats meet every large ship on its way into Halifax, near the pilot boarding area off Chebucto Head. If the rendezvous triangles bunch up in one spot outside the port circles, that is a boarding or waiting area. Add a circle for it.
 
 ## Step 8. Review the flags by hand
 
@@ -157,7 +157,7 @@ Put the numbers in the Results section of the README.
 
 ## Plan B: use US waters instead
 
-Use this only if step 4 shows that aisstream.io cannot hear ships near Saint John.
+Use this only if step 4 shows that aisstream.io cannot hear ships in your study area. (This project already used a simpler version of Plan B once: it started in the Bay of Fundy, where aisstream.io hears nothing, and moved to Halifax. If even Halifax fails for you, US waters are the last resort, because they are the only ones with a free historical archive.)
 
 MarineCadastre.gov has years of historical AIS data, free, but only for US waters. You move the study area across the border and download a month of history instead of collecting it.
 
@@ -184,7 +184,7 @@ MarineCadastre.gov has years of historical AIS data, free, but only for US water
    python run_pipeline.py
    ```
 
-Remember to update the README, since the project would no longer be about the Bay of Fundy.
+Remember to update the README, since the project would no longer be about Halifax.
 
 ---
 
