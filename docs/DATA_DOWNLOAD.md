@@ -96,7 +96,7 @@ Ways to keep it running:
   - Windows: Settings > System > Power > "When plugged in, put my device to sleep after" > **Never**. Leave the terminal window open.
   - Mac: run `caffeinate -i python collect_ais.py` instead of the normal command.
   - Linux: run `nohup python collect_ais.py &` so it keeps going after you close the terminal.
-- **A Raspberry Pi or old laptop** left on in a corner. This is the most reliable cheap option.
+- **A Raspberry Pi or old laptop** left on in a corner. This is the most reliable cheap option — full setup guide for a Pi in **[docs/RASPBERRY_PI.md](RASPBERRY_PI.md)**.
 - **A small cloud server**, if you already know how to use one.
 
 ### Checking on it
