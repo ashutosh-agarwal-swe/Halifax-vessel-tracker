@@ -23,7 +23,7 @@ Two things follow from that:
 3. Go to the project folder:
 
    ```
-   cd path/to/fundy-vessel-tracker
+   cd path/to/halifax-vessel-tracker
    ```
 
 4. Install the libraries:

@@ -1,10 +1,10 @@
-# Fundy Vessel Tracker
+# Halifax Vessel Tracker
 
 Built with AI-assisted development and human testing/oversight.  
 
 **Finding unusual ship behaviour in the waters off Halifax using public AIS data.**
 
-*(The project started out aimed at the Bay of Fundy — the name stuck. See [Why Halifax and not the Bay of Fundy](#why-halifax-and-not-the-bay-of-fundy).)*
+*(The project started out aimed at the Bay of Fundy. See [Why Halifax and not the Bay of Fundy](#why-halifax-and-not-the-bay-of-fundy).)*
 
 Ships broadcast their position over radio using a system called AIS. This project collects those broadcasts for the waters around Halifax, Nova Scotia, and looks for three kinds of behaviour that maritime analysts care about:
 
@@ -169,8 +169,8 @@ There is no official list of "ships that really went dark", so this is my own ju
 You need Python 3.10 or newer.
 
 ```
-git clone https://github.com/ashutosh-agarwal-swe/fundy-vessel-tracker.git
-cd fundy-vessel-tracker
+git clone https://github.com/ashutosh-agarwal-swe/halifax-vessel-tracker.git
+cd halifax-vessel-tracker
 pip install -r requirements.txt
 ```
 
